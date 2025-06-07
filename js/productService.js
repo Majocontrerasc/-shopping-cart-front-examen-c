@@ -90,7 +90,7 @@ function getProduct(idProduct) {
 }
 
 function addProduct(){
-  const modalUser = `
+  const modalProduct = `
   <!-- Modal -->
 
   <div class="modal fade" id="showModalUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -106,7 +106,7 @@ function addProduct(){
           <div class="card">
               <div class="card-body">
 
-                  <form id="formAddUser">
+                  <form id="formAddProcut">
                       <div class="row">
                           <div class="col">
                               <input type="text" id="title" class="form-control" placeholder="Nombre Producto" aria-label="title" required>
@@ -127,7 +127,7 @@ function addProduct(){
 
                       <div class="row mt-3 ">
                           <div class="col text-center">
-                              <button type="button" class="btn btn-success" onclick="saveProducto()">
+                              <button type="button" class="btn btn-success" onclick="saveProduct()">
                                   <i class="fa-solid fa-floppy-disk"></i> Guardar
                               </button>
                           </div>
@@ -146,19 +146,19 @@ function addProduct(){
     </div>
   </div>
   `
-  document.getElementById('modalUser').innerHTML = modalUser
+  document.getElementById('viewModal').innerHTML = modalProduct
   const modal = new bootstrap.Modal(document.getElementById('showModalUser'))
   modal.show()
 }
 
-function saveProducto(){
-  const form = document.getElementById('formAddProcu')
+function saveProduct(){
+  const form = document.getElementById('formAddProcut')
   if(form.checkValidity()){
       const title = document.getElementById('title').value
       const category = document.getElementById('category').value
       const description = document.getElementById('description').value
       const price = document.getElementById('price').value
-      const user = {title, category, description, price}
+      const product = {title, category, description, price}
 
       const REQRES_ENDPOINT = 'https://dummyjson.com/products/add'
       fetch(REQRES_ENDPOINT, {
@@ -166,7 +166,7 @@ function saveProducto(){
           headers: {
               'Content-type': 'application/json',
           },
-          body: JSON.stringify(user)
+          body: JSON.stringify(product)
       })
       .then((response) =>{
           return response.json().then(
@@ -179,7 +179,8 @@ function saveProducto(){
           )
       })
       .then((result) =>{
-          if(result.status === 195){
+          if(result.status === 201){
+            console.log('producto agregado',result)
               document.getElementById('info').innerHTML = 
                   '<h3 class="text-success">El Producto se guardo correctamente </h3>'
           }
