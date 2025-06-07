@@ -11,9 +11,8 @@ function showShoppingCarts() {
       data.carts.forEach(cart => {
         cartsHtml += `
 
-        <button type="button" class="btn btn-outline-success" onclick="addProduct()">
-        add
-         </button>
+        <button type="button" class="btn btn-outline-success" onclick="createCarrito()">
+        <i class="bi bi-cart-plus-fill"></i>agregar Carrito</button>
 
         <div class="mb-5 p-3 border rounded shadow-sm bg-light mt-3">
           <div class="d-flex justify-content-between align-items-center mb-3">
@@ -72,7 +71,7 @@ function createCarrito() {
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title fs-5" id="exampleModalLabel">Crear Carrito</h5>
+                <h5 class="modal-title fs-5" id="exampleModalLabel">Guardar Carrito</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -80,27 +79,33 @@ function createCarrito() {
                     <div class="card-body">
                         <form id="formCreateCarrito">
                             <div class="row g-3">
-                                <div class="col">
-                                    <input type="text" class="form-control" id="name" placeholder="id" required>
+
+                             <div class="row mt-3">
+                                  <div class="col">
+                                      <input type="text" class="form-control" id="title" placeholder="Nombre Del Produccto" required>
+                                  </div>
+                                  <div class="col">
+                                      <input type="number" class="form-control" id="price" placeholder="Precio" required>
+                                  </div>
+                              </div>
+                              
+                              <div class="row mt-3">
+                                  <div class="col">
+                                      <input type="number" class="form-control" id="quantity" placeholder="Cantidad" required>
+                                  </div>
+                                  <div class="col">
+                                      <input type="number" class="form-control" id="total" placeholder="total" required>
+                                  </div>
                                 </div>
-                                <div class="col">
-                                    <input type="url" class="form-control" id="title" placeholder="title" required>
-                                </div>
-                                <div class="col">
-                                    <input type="url" class="form-control" id="price" placeholder="price" required>
-                                </div>
-                                <div class="col">
-                                    <input type="url" class="form-control" id="quantity" placeholder="quantity" required>
-                                </div>
-                                <div class="col">
-                                    <input type="url" class="form-control" id="total" placeholder="total" required>
-                                </div>
-                                <div class="col">
-                                    <input type="url" class="form-control" id="discountPercentage" placeholder="discountPercentage" required>
-                                </div>
-                                <div class="col">
-                                    <input type="url" class="form-control" id="discountedPrice" placeholder="discountedPrice" required>
-                                </div>
+
+                              <div class="row mt-3">
+                                  <div class="col">
+                                      <input type="number" class="form-control" id="discountPercentage" placeholder="porcentaje de descuento" required>
+                                  </div>
+                                  <div class="col">
+                                      <input type="number" class="form-control" id="discountedPrice" placeholder="Precio con descuento" required>
+                                  </div>
+                              </div>
                             </div>
                             
                             <div class="text-end mt-4">
@@ -121,10 +126,10 @@ function createCarrito() {
   )
   modal.show()
 }
+
 function saveCarrito() {
   const form = document.getElementById('formCreateCarrito')
   if (form.checkValidity()) {
-    const id = document.getElementById('id').value
     const title = document.getElementById('title').value
     const price = document.getElementById('price').value
     const quantity = document.getElementById('quantity').value
@@ -134,10 +139,8 @@ function saveCarrito() {
 
 
 
-    const categoria = { id, title, price, quantity, total, discountPercentage, discountedPrice }
-
-    const FAKEAPI_ENDPOINT = 'https://dummyjson.com/carts/add'
-    fetch(FAKEAPI_ENDPOINT, {
+    const categoria = { title, price, quantity, total, discountPercentage, discountedPrice }
+    fetch('https://dummyjson.com/carts/add', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
@@ -161,25 +164,29 @@ function saveCarrito() {
       })
 
     })
-      .then(response => response.json())
-
-      .then((data) => {
-        console.log("entra", data)
-
-        document.getElementById('info').innerHTML =
-          '<h3>Guardado exitosamente</h3>'
-
-
-
-        const modalId = document.getElementById('modalCategoria')
+      .then((response) => {
+        return response.json().then(
+          data => {
+            return {
+              status: response.status,
+              info: data
+            }
+          }
+        )
+      })
+      .then((result) => {
+        if (result.status === 201) {
+          console.log('producto agregado', result)
+          document.getElementById('info').innerHTML =
+            '<h3 class="text-success">El Producto se guardo correctamente </h3>'
+        }
+        else {
+          document.getElementById('info').innerHTML =
+            '<h3 class="text-danger">No se guardo el Producto en la Api</h3>'
+        }
+        const modalId = document.getElementById('modalCarrito')
         const modal = bootstrap.Modal.getInstance(modalId)
         modal.hide()
-
-      })
-      .catch(error => {
-        console.error("Error:", error)
-        document.getElementById('info').innerHTML =
-          '<h3>Error al guardar la categoria</h3>'
       })
   }
   else {

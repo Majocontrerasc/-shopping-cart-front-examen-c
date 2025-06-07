@@ -7,7 +7,7 @@ function products() {
             let listProduct = `
           
        <button type="button" class="btn btn-outline-success" onclick="addProduct()">
-       add
+       <i class="bi bi-bag-plus-fill"></i> agregar producto 
         </button>
 
         <div class="table-responsive  mt-3">
@@ -180,7 +180,7 @@ function saveProduct(){
       })
       .then((result) =>{
           if(result.status === 201){
-            console.log('producto agregado',result)
+            console.log('producto agregado', result)
               document.getElementById('info').innerHTML = 
                   '<h3 class="text-success">El Producto se guardo correctamente </h3>'
           }
